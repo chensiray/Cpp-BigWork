@@ -1,0 +1,77 @@
+#pragma once
+#include"rescource.h"
+class Player;
+class BulletBox;
+class Bullet :public sf::Drawable
+{
+public:
+	Bullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const int& type);
+	float getv()const;
+	float getTime()const;
+	void restart();
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const override = 0;
+	virtual bool checkCollision(const sf::FloatRect& playerBounds)const = 0;
+	virtual void update() = 0;
+	bool isactive;
+private:
+	sf::RectangleShape self;
+	sf::Time birthTime;
+	float velocity;
+	int type;
+};
+
+class RoundBullet :public Bullet
+{
+public:
+	RoundBullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type);
+	void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
+	bool checkCollision(const sf::FloatRect& playerBounds)const override;
+	void update()override;
+private:
+	sf::CircleShape self;
+	float angle;
+};
+
+class TriangleBullet :public Bullet
+{
+public:
+	TriangleBullet(const float& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const int& type, Player* target);
+	void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
+	bool checkCollision(const sf::FloatRect& playerBounds)const override;
+	void update()override;
+private:
+	sf::CircleShape self = sf::CircleShape(40.f, 3);
+	float angle;
+	bool isfollow;
+	Player* target;
+};
+
+class RectangleBullet :public Bullet
+{
+public:
+	RectangleBullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type, const float& wait);
+	void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
+	bool checkCollision(const sf::FloatRect& playBounds)const override;
+	void update()override;
+private:
+	sf::RectangleShape self;
+	sf::Color color;
+	float angle;
+	float wait;
+	bool ismove;
+};
+
+class BoomBullet :public Bullet
+{
+public:
+	BoomBullet(const float& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type, const float& wait, BulletBox* boxptr);
+	void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
+	bool checkCollision(const sf::FloatRect& playBounds)const override;
+	void update()override;
+private:
+	sf::CircleShape self;
+	sf::Color color;
+	BulletBox* box;
+	float angle;
+	float wait;
+};

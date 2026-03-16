@@ -1,0 +1,212 @@
+#include"Bullet.h"
+#include"BulletBox.h"
+#include"Player.h"
+Bullet::Bullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const int& type)
+{
+	this->self.setPosition(position);
+	this->self.setSize(size);
+	this->self.setFillColor(color);
+	this->velocity = velocity;
+	this->isactive = true;
+	this->type = type;
+	this->birthTime = gameTime;
+}
+float Bullet::getv()const
+{
+	if (this->type == 1)
+	{
+		return this->velocity;
+	}
+	if (this->type == 2)
+	{
+		float elapse = this->getTime() / 0.4f;
+		return this->velocity * exp(1 - elapse) + 4.f;
+	}
+	if (this->type == 3)
+	{
+		float elapse = this->getTime() / 1.2f;
+		return this->velocity * exp(elapse) + 3.f;
+	}
+	return 0;
+}
+float Bullet::getTime()const
+{
+	return (gameTime - this->birthTime) / sf::seconds(1.f);
+}
+void Bullet::restart()
+{
+	this->birthTime = gameTime;
+}
+//RoundBullet
+RoundBullet::RoundBullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type) :Bullet(size, position, color, velocity, type)
+{
+	this->self.setPosition(position);
+	this->self.setRadius(size.x/2.f);
+	this->self.setOrigin({ size.x / 2.f,size.x / 2.f });
+	this->self.setFillColor(color);
+	this->angle = angle;
+}
+void RoundBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
+{
+	target.draw(this->self, states);
+}
+bool RoundBullet::checkCollision(const sf::FloatRect& playerBounds)const
+{
+	float dx = this->self.getPosition().x - std::max(playerBounds.position.x, std::min(this->self.getPosition().x, playerBounds.position.x + playerBounds.size.x));
+	float dy = this->self.getPosition().y - std::max(playerBounds.position.y, std::min(this->self.getPosition().y, playerBounds.position.y + playerBounds.size.y));
+	return (dx * dx + dy * dy) <= this->self.getRadius() * this->self.getRadius();
+}
+void RoundBullet::update()
+{
+	float v = this->getv();
+	this->self.move({ v * cos(this->angle), v * sin(this->angle) });
+	if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
+	{
+		this->isactive = false;
+	}
+}
+//TriangleBullet
+TriangleBullet::TriangleBullet(const float& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const int& type, Player *target) :Bullet({ size,size }, position, color, velocity, type)
+{
+	this->self.setPosition(position);
+	this->self.setRadius(size / 2);
+	this->self.setOrigin({ size / 2.f,size / 2.f });
+	this->self.setFillColor(color);
+	this->target = target;
+	this->angle = 0;
+	this->isfollow = true;
+}
+void TriangleBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
+{
+	target.draw(this->self, states);
+}
+bool TriangleBullet::checkCollision(const sf::FloatRect& playerBounds)const
+{
+	float dx = this->self.getPosition().x - std::max(playerBounds.position.x, std::min(this->self.getPosition().x, playerBounds.position.x + playerBounds.size.x));
+	float dy = this->self.getPosition().y - std::max(playerBounds.position.y, std::min(this->self.getPosition().y, playerBounds.position.y + playerBounds.size.y));
+	return (dx * dx + dy * dy) <= this->self.getRadius() * this->self.getRadius();
+}
+void TriangleBullet::update()
+{
+	float v = this->getv();
+	sf::Vector2f to = this->target->getPosition();
+	float dx = to.x - this->self.getPosition().x;
+	float dy = to.y - this->self.getPosition().y;
+	if (this->isfollow)
+	{
+		this->angle = atan2(dy, dx);
+	}
+	if (dx * dx + dy * dy < 30000.f || this->getTime() > 3.f)
+	{
+		this->isfollow = false;
+	}
+	this->self.move({ v * cos(this->angle),v * sin(this->angle) });
+	this->self.rotate(sf::degrees(12));
+	if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
+	{
+		this->isactive = false;
+	}
+}
+//RectangleBullet
+RectangleBullet::RectangleBullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type, const float& wait) :Bullet(size, position, color, velocity, type)
+{
+	this->self.setPosition(position);
+	this->self.setSize(size);
+	this->self.setFillColor(color);
+	this->self.setOrigin(size / 2.f);
+	this->color = color;
+	this->angle = angle;
+	this->wait = wait;
+	this->ismove = false;
+}
+void RectangleBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
+{
+	target.draw(this->self, states);
+}
+bool RectangleBullet::checkCollision(const sf::FloatRect& playerBounds)const
+{
+	sf::FloatRect bulletRect = this->self.getGlobalBounds();
+	if (const std::optional intersection = bulletRect.findIntersection(playerBounds))
+	{
+		return true;
+	}
+	return false;
+}
+void RectangleBullet::update()
+{
+	if (this->ismove)
+	{
+		float v = this->getv();
+		this->self.move({ v * cos(this->angle), v * sin(this->angle) });
+		if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
+		{
+			this->isactive = false;
+		}
+	}
+	else
+	{
+		float rest = this->wait - this->getTime();
+		if (rest > 0.f && rest < 0.75f)
+		{
+			this->self.setFillColor(this->color);
+			if (sin(rest * 8 * pi) > 0)
+			{
+				this->self.setFillColor(sf::Color::White);
+			}
+		}
+		if (rest <= 0.f)
+		{
+			this->self.setFillColor(this->color);
+			this->ismove = true;
+			this->restart();
+		}
+	}
+}
+//BoomBullet
+BoomBullet::BoomBullet(const float& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type, const float& wait, BulletBox* boxptr) :Bullet({ size,size }, position, color, velocity, type)
+{
+	this->box = boxptr;
+	this->self.setPosition(position);
+	this->self.setRadius(size / 2.f);
+	this->self.setOrigin({ size / 2.f,size / 2.f });
+	this->self.setFillColor(color);
+	this->angle = angle;
+	this->color = color;
+	this->wait = wait;
+}
+void BoomBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
+{
+	target.draw(this->self, states);
+}
+bool BoomBullet::checkCollision(const sf::FloatRect& playerBounds)const
+{
+	float dx = this->self.getPosition().x - std::max(playerBounds.position.x, std::min(this->self.getPosition().x, playerBounds.position.x + playerBounds.size.x));
+	float dy = this->self.getPosition().y - std::max(playerBounds.position.y, std::min(this->self.getPosition().y, playerBounds.position.y + playerBounds.size.y));
+	return (dx * dx + dy * dy) <= this->self.getRadius() * this->self.getRadius();
+}
+void BoomBullet::update()
+{
+	float v = this->getv();
+	this->self.move({ v * cos(this->angle), v * sin(this->angle) });
+	if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
+	{
+		this->isactive = false;
+	}
+	this->box->setPosition(self.getPosition());
+	float rest = this->wait - this->getTime();
+	if (rest > 0.f && rest < 0.75f)
+	{
+		this->self.setFillColor(this->color);
+		if (sin(rest * 8 * pi) > 0)
+		{
+			this->self.setFillColor(sf::Color::White);
+		}
+	}
+	if (rest <= 0.f)
+	{
+		this->self.setFillColor(this->color);
+		this->isactive = false;
+		box->round(20.f, 2, -30.f);
+		delete box;
+	}
+}

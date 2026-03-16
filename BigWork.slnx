@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="BigWork.vcxproj" Id="f52a16bf-33a5-49df-9a5e-d4ba6dd84c64" />
+</Solution>
