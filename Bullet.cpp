@@ -1,6 +1,11 @@
 #include"Bullet.h"
 #include"BulletBox.h"
 #include"Player.h"
+bool cmp(const std::unique_ptr<Bullet>& bullet)
+{
+	return !bullet->isactive;
+}
+int Bullet::count = 0;
 Bullet::Bullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const int& type)
 {
 	this->self.setPosition(position);
@@ -10,6 +15,7 @@ Bullet::Bullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf:
 	this->isactive = true;
 	this->type = type;
 	this->birthTime = gameTime;
+	this->count++;
 }
 float Bullet::getv()const
 {
@@ -174,6 +180,10 @@ BoomBullet::BoomBullet(const float& size, const sf::Vector2f& position, const sf
 	this->color = color;
 	this->wait = wait;
 }
+BoomBullet::~BoomBullet()
+{
+	delete this->box;
+}
 void BoomBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
 {
 	target.draw(this->self, states);
@@ -206,7 +216,50 @@ void BoomBullet::update()
 	{
 		this->self.setFillColor(this->color);
 		this->isactive = false;
-		box->round(20.f, 2, -30.f);
-		delete box;
+		this->box->round(20.f, 2, -30.f);
+	}
+}
+//PlaneBullet
+PlaneBullet::PlaneBullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type, const float& wait, BulletBox* boxptr) :Bullet(size, position, color, velocity, type)
+{
+	this->self.setSize(size);
+	this->self.setPosition(position);
+	this->self.setFillColor(color);
+	this->self.setOrigin(size / 2.f);
+	this->angle = angle;
+	this->wait = wait;
+	this->color = color;
+	this->box = boxptr;
+}
+PlaneBullet::~PlaneBullet()
+{
+	delete this->box;
+}
+void PlaneBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
+{
+	target.draw(this->self, states);
+}
+bool PlaneBullet::checkCollision(const sf::FloatRect& playerBounds)const
+{
+	sf::FloatRect bulletRect = this->self.getGlobalBounds();
+	if (const std::optional intersection = bulletRect.findIntersection(playerBounds))
+	{
+		return true;
+	}
+	return false;
+}
+void PlaneBullet::update()
+{
+	float v = this->getv();
+	this->self.move({ v * cos(this->angle), v * sin(this->angle) });
+	if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
+	{
+		this->isactive = false;
+	}
+	this->box->setPosition(this->self.getPosition());
+	if (this->getTime() > this->wait)
+	{
+		this->box->round(20.f, 2, 0.f);
+		this->restart();
 	}
 }

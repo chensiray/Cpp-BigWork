@@ -27,6 +27,9 @@
     <ClCompile Include="rescource.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="award.png" />
+    <Image Include="music.png" />
+    <Image Include="pause.png" />
     <Image Include="RedHeart.png" />
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +41,11 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="rescource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Darkling.mp3" />
+    <Media Include="Mesmerizing Galaxy Loop.mp3" />
+    <Media Include="Obliteration.mp3" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

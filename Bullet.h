@@ -13,12 +13,14 @@ public:
 	virtual bool checkCollision(const sf::FloatRect& playerBounds)const = 0;
 	virtual void update() = 0;
 	bool isactive;
+	static int count;
 private:
 	sf::RectangleShape self;
 	sf::Time birthTime;
 	float velocity;
 	int type;
 };
+extern bool cmp(const std::unique_ptr<Bullet>& bullet);
 
 class RoundBullet :public Bullet
 {
@@ -65,6 +67,7 @@ class BoomBullet :public Bullet
 {
 public:
 	BoomBullet(const float& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type, const float& wait, BulletBox* boxptr);
+	~BoomBullet();
 	void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	bool checkCollision(const sf::FloatRect& playBounds)const override;
 	void update()override;
@@ -74,4 +77,20 @@ private:
 	BulletBox* box;
 	float angle;
 	float wait;
+};
+
+class PlaneBullet :public Bullet
+{
+public:
+	PlaneBullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type, const float& wait,BulletBox* boxptr);
+	~PlaneBullet();
+	void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
+	bool checkCollision(const sf::FloatRect& playBounds)const override;
+	void update()override;
+private:
+	sf::RectangleShape self;
+	sf::Color color;
+	float angle;
+	float wait;
+	BulletBox* box;
 };

@@ -1,12 +1,19 @@
 #include"rescource.h"
 sf::Font font("HarmonyOS_Sans_SC_Regular.ttf");
 sf::Texture heartTexture("RedHeart.png");
+sf::Texture musicTexture("music.png");
+sf::Texture pauseTexture("pause.png");
+sf::Texture awardTexture("award.png");
 const float pi = 3.1415926f;
-sf::Color button_default(0, 0, 255);
 sf::Color button_hovered(0, 50, 200);
 sf::Time gameTime = sf::seconds(0.f);
 std::random_device rd;
 std::mt19937 gen(rd());
+sf::Music musicmain("Mesmerizing Galaxy Loop.mp3");
+sf::Music musiclevel1("Obliteration.mp3");
+sf::Music musiclevel2("Darkling.mp3");
+sf::Music musiclevel3("Obliteration.mp3");
+sf::Music musiclevel4("Obliteration.mp3");
 void updateViewport(const sf::RenderWindow& window, sf::View& gameview)
 {
     sf::Vector2u windowSize = window.getSize();

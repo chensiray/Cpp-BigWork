@@ -85,3 +85,11 @@ void Player::addlife(const int& cnt)
 {
 	this->life += cnt;
 }
+int Player::getlife()const
+{
+	return this->life;
+}
+bool Player::alive()const
+{
+	return this->life > 0;
+}

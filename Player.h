@@ -7,7 +7,9 @@ public:
 	void update();
 	void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 	void hurt();
+	bool alive()const;
 	void addlife(const int& cnt);
+	int getlife()const;
 	sf::FloatRect getBounds()const;
 	sf::Vector2f getPosition()const;
 private:
