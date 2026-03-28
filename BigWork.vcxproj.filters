@@ -33,6 +33,15 @@
     <ClCompile Include="BullutBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Lottery.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="RedHeart.png">
@@ -45,6 +54,24 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="award.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="clear.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="clock.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="glasses.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="speed.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="shield.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="coin.png">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
@@ -69,6 +96,15 @@
     <ClInclude Include="BulletBox.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Lottery.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Darkling.mp3">
@@ -78,6 +114,12 @@
       <Filter>资源文件</Filter>
     </Media>
     <Media Include="Obliteration.mp3">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="Galactic Rap.mp3">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="Screen Saver.mp3">
       <Filter>资源文件</Filter>
     </Media>
   </ItemGroup>

@@ -1,10 +1,6 @@
 #include"Bullet.h"
 #include"BulletBox.h"
 #include"Player.h"
-bool cmp(const std::unique_ptr<Bullet>& bullet)
-{
-	return !bullet->isactive;
-}
 int Bullet::count = 0;
 Bullet::Bullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const int& type)
 {

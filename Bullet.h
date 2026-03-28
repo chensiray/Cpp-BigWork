@@ -1,6 +1,6 @@
 #pragma once
 #include"rescource.h"
-class Player;
+#include"player.h"
 class BulletBox;
 class Bullet :public sf::Drawable
 {
@@ -20,7 +20,6 @@ private:
 	float velocity;
 	int type;
 };
-extern bool cmp(const std::unique_ptr<Bullet>& bullet);
 
 class RoundBullet :public Bullet
 {

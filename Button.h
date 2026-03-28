@@ -12,7 +12,6 @@ private:
 	sf::RectangleShape background;
 	sf::Text text = sf::Text(font);
 	sf::Color color;
-	bool isHovered;
 	sf::Time birthTime;
 	sf::Time animationDuration;
 	bool isAnimating;

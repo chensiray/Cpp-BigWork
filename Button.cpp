@@ -13,7 +13,6 @@ Button::Button(const sf::String& content,const sf::Vector2f &size, const sf::Vec
 	float texty = textBounds.position.y + textBounds.size.y / 2.f;
 	this->text.setOrigin({ textx,texty });
 	this->text.setPosition(this->background.getPosition());
-	this->isHovered = false;
 	this->isAnimating = false;
 	this->animationDuration = sf::seconds(0.2f);
 }
@@ -66,14 +65,13 @@ void Button::update(const sf::Vector2f& mousePos)
 	{
 		if (this->background.getGlobalBounds().contains(mousePos))
 		{
-			this->background.setFillColor(button_hovered);
-			this->isHovered = true;
+			this->color.a = static_cast<std::uint8_t>(180);
 		}
 		else
 		{
-			this->background.setFillColor(this->color);
-			this->isHovered = false;
+			this->color.a = static_cast<std::uint8_t>(255);
 		}
+		this->background.setFillColor(this->color);
 	}
 }
 MusicButton::MusicButton(const sf::Vector2f& size, const sf::Vector2f& position) :Button(sf::String(""), size, position, sf::Color::White)

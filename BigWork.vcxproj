@@ -22,15 +22,24 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BullutBox.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="Lottery.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="rescource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="award.png" />
+    <Image Include="clear.png" />
+    <Image Include="clock.png" />
+    <Image Include="coin.png" />
+    <Image Include="glasses.png" />
     <Image Include="music.png" />
     <Image Include="pause.png" />
     <Image Include="RedHeart.png" />
+    <Image Include="shield.png" />
+    <Image Include="speed.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="HarmonyOS_Sans_SC_Regular.ttf" />
@@ -39,13 +48,18 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletBox.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="Lottery.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="rescource.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Darkling.mp3" />
+    <Media Include="Galactic Rap.mp3" />
     <Media Include="Mesmerizing Galaxy Loop.mp3" />
     <Media Include="Obliteration.mp3" />
+    <Media Include="Screen Saver.mp3" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

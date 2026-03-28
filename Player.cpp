@@ -6,19 +6,23 @@ Player::Player(const int& life, const float& x, const float& y)
 	this->self.setPosition({ x,y });
 	this->self.setFillColor(sf::Color::Cyan);
 	this->isimmune = false;
+	this->haveclear = 0;
+	this->haveclock = 0;
+	this->havecoin = 0;
+	this->haveshield = 0;
+	this->speed = 10.f;
+	this->isshield = false;
 	for (int i = 0; i < 10; i++)
 	{
-		sf::Sprite* heart = new sf::Sprite(heartTexture);
-		heart->setPosition({ -5.f+i*70.f,10.f });
-		heart->setScale({ 0.05f,0.05f });
-		this->hearts.push_back(heart);
+		this->hearts[i].setPosition({-5.f + i * 70.f,10.f});
+		this->hearts[i].setScale({0.05f,0.05f});
 	}
 }
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states)const
 {
-	for (int i = 0; i < this->life; i++)
+	for (int i = 0; i < std::min(this->life, 10); i++)
 	{
-		target.draw(*(this->hearts[i]));
+		target.draw(this->hearts[i]);
 	}
 	target.draw(this->self, states);
 }
@@ -27,19 +31,19 @@ void Player::update()
 	//move
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 	{
-		this->self.move({ 0.f,-10.f});
+		this->self.move({ 0.f,-this->speed});
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 	{
-		this->self.move({ 0.f,10.f });
+		this->self.move({ 0.f,this->speed });
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 	{
-		this->self.move({ -10.f,0.f });
+		this->self.move({ -this->speed,0.f });
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 	{
-		this->self.move({ 10.f,0.f });
+		this->self.move({ this->speed,0.f });
 	}
 	sf::Vector2f position = this->self.getPosition();
 	position.x = position.x < 10 ? 10 : position.x;
@@ -48,6 +52,19 @@ void Player::update()
 	position.y = position.y >= 1070 ? 1070 : position.y;
 	this->self.setPosition(position);
 	//injury
+	if (this->isshield)
+	{
+		this->self.setFillColor(sf::Color::Green);
+		if ((gameTime - shieldBirthTime) / sf::seconds(1.f) > 3.f)
+		{
+			this->isshield = false;
+			this->self.setFillColor(sf::Color::Cyan);
+		}
+	}
+	else
+	{
+		this->self.setFillColor(sf::Color::Cyan);
+	}
 	if (this->isimmune)
 	{
 		float elapse = (gameTime-immuneBirthTime) / sf::seconds(1.f);
@@ -76,10 +93,15 @@ sf::Vector2f Player::getPosition()const
 }
 void Player::hurt()
 {
-	if (this->isimmune) return;
+	if (this->isimmune || this->isshield) return;
 	this->life--;
 	this->isimmune = true;
 	this->immuneBirthTime = gameTime;
+}
+void Player::shield()
+{
+	this->isshield = true;
+	this->shieldBirthTime = gameTime;
 }
 void Player::addlife(const int& cnt)
 {
@@ -92,4 +114,9 @@ int Player::getlife()const
 bool Player::alive()const
 {
 	return this->life > 0;
+}
+void Player::addspeed(const float& rate)
+{
+	this->speed += rate;
+	this->speed = std::min(this->speed, 20.f);
 }

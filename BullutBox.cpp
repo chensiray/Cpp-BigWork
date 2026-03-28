@@ -25,18 +25,11 @@ void BulletBox::follow(const float& size, const int& type,Player *const target)
 {
     this->bullets->push_back(std::unique_ptr<TriangleBullet>(new TriangleBullet(size, this->position, sf::Color::Red, 5.f, type, target)));
 }
-void BulletBox::rightround(const float& size, const int& type)
+void BulletBox::sector(const float& size, const int& type,const float& angle)
 {
     for (int i = 0; i <= 8; i++)
     {
-        this->bullets->push_back(std::unique_ptr<RoundBullet>(new RoundBullet({ size,size }, this->position, sf::Color::Red, 5.f, pi * i / 24 - pi / 6, type)));
-    }
-}
-void BulletBox::leftround(const float& size, const int& type)
-{
-    for (int i = 0; i <= 8; i++)
-    {
-        this->bullets->push_back(std::unique_ptr<RoundBullet>(new RoundBullet({ size,size }, this->position, sf::Color::Red, 5.f, pi * i / 24 - pi * 7 / 6, type)));
+        this->bullets->push_back(std::unique_ptr<RoundBullet>(new RoundBullet({ size,size }, this->position, sf::Color::Red, 5.f, angle + pi * i / 24 - pi / 6, type)));
     }
 }
 void BulletBox::randomfall(const sf::Vector2f& size, const int& type, const float& angle)

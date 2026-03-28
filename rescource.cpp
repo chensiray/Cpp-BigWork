@@ -4,16 +4,21 @@ sf::Texture heartTexture("RedHeart.png");
 sf::Texture musicTexture("music.png");
 sf::Texture pauseTexture("pause.png");
 sf::Texture awardTexture("award.png");
-const float pi = 3.1415926f;
-sf::Color button_hovered(0, 50, 200);
-sf::Time gameTime = sf::seconds(0.f);
-std::random_device rd;
-std::mt19937 gen(rd());
+sf::Texture clockTexture("clock.png");
+sf::Texture shieldTexture("shield.png");
+sf::Texture speedTexture("speed.png");
+sf::Texture clearTexture("clear.png");
+sf::Texture coinTexture("coin.png");
 sf::Music musicmain("Mesmerizing Galaxy Loop.mp3");
 sf::Music musiclevel1("Obliteration.mp3");
 sf::Music musiclevel2("Darkling.mp3");
-sf::Music musiclevel3("Obliteration.mp3");
-sf::Music musiclevel4("Obliteration.mp3");
+sf::Music musiclevel3("Galactic Rap.mp3");
+sf::Music musiclevel4("Screen Saver.mp3");
+sf::Texture texture[6] = { heartTexture, speedTexture, shieldTexture, clockTexture, clearTexture ,coinTexture};
+const float pi = 3.1415926f;
+sf::Time gameTime = sf::seconds(0.f);
+std::random_device rd;
+std::mt19937 gen(rd());
 void updateViewport(const sf::RenderWindow& window, sf::View& gameview)
 {
     sf::Vector2u windowSize = window.getSize();
