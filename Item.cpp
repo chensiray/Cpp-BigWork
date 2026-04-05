@@ -50,7 +50,7 @@ void Item::checkCollision(Player& player)
 			player.addlife(1);
 			break;
 		case 1:
-			player.addspeed(4.f);
+			player.addspeed();
 			break;
 		case 2:
 			player.haveshield++;

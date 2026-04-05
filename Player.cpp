@@ -5,13 +5,21 @@ Player::Player(const int& life, const float& x, const float& y)
 	this->self.setOrigin({ 10.f,10.f });
 	this->self.setPosition({ x,y });
 	this->self.setFillColor(sf::Color::Cyan);
+	this->glow.setFillColor(sf::Color({ 0,255,255,60 }));
+	this->glow.setRadius(20.f);
+	this->glow.setOrigin({ 20.f,20.f });
+	this->glowClock.restart();
 	this->isimmune = false;
 	this->haveclear = 0;
 	this->haveclock = 0;
 	this->havecoin = 0;
 	this->haveshield = 0;
-	this->speed = 10.f;
+	this->m_acceleration = 2400.f;
+	this->maxspeed = 1200.f;
+	this->speed = { 0.f, 0.f };
+	this->friction = 3.f;
 	this->isshield = false;
+	this->trailmax = 55;
 	for (int i = 0; i < 10; i++)
 	{
 		this->hearts[i].setPosition({-5.f + i * 70.f,10.f});
@@ -24,33 +32,63 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states)const
 	{
 		target.draw(this->hearts[i]);
 	}
+	target.draw(this->glow, states);
+	target.draw(this->trailvertics, states);
 	target.draw(this->self, states);
 }
 void Player::update()
 {
+	//trail
+	sf::Vector2f delta = { std::uniform_real_distribution<float>(-8.f,8.f)(gen),std::uniform_real_distribution<float>(-8.f,8.f)(gen) };
+	this->trail.push_front(this->self.getPosition() + delta);
+	if (trail.size() > this->trailmax) trail.pop_back();
+	this->trailvertics.clear();
+	sf::Color color({ 0,255,255,255 });
+	for (const auto& pos : trail)
+	{
+		trailvertics.append(sf::Vertex(pos, color));
+		color.a -= static_cast<std::uint8_t>(1.f / this->trailmax * 255);
+	}
+	//glow
+	glow.setFillColor(sf::Color({ 0,255,255,static_cast <std::uint8_t>(60 + 40 * sin(pi * this->glowClock.getElapsedTime().asSeconds())) }));
 	//move
+	sf::Time deltaTime = sf::seconds(1.f / 60.f);
+	sf::Vector2f input(0.f, 0.f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 	{
-		this->self.move({ 0.f,-this->speed});
+		input.y -= 1;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 	{
-		this->self.move({ 0.f,this->speed });
+		input.y += 1;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 	{
-		this->self.move({ -this->speed,0.f });
+		input.x -= 1;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 	{
-		this->self.move({ this->speed,0.f });
+		input.x += 1;
 	}
+	if (input.x != 0.f && input.y != 0.f)
+	{
+		input = input / std::hypot(input.x, input.y);
+	}
+	sf::Vector2f acceleration = input * this->m_acceleration;
+	this->speed += acceleration * deltaTime.asSeconds();
+	if (std::hypot(this->speed.x, this->speed.y) > this->maxspeed)
+	{
+		this->speed = this->speed / std::hypot(this->speed.x, this->speed.y) * this->maxspeed;
+	}
+	this->speed -= this->speed * this->friction * deltaTime.asSeconds();
+	this->self.move(this->speed * deltaTime.asSeconds());
 	sf::Vector2f position = this->self.getPosition();
 	position.x = position.x < 10 ? 10 : position.x;
 	position.x = position.x > 1910 ? 1910 : position.x;
 	position.y = position.y <= 10 ? 10 : position.y;
 	position.y = position.y >= 1070 ? 1070 : position.y;
 	this->self.setPosition(position);
+	this->glow.setPosition(position);
 	//injury
 	if (this->isshield)
 	{
@@ -68,7 +106,7 @@ void Player::update()
 	if (this->isimmune)
 	{
 		float elapse = (gameTime-immuneBirthTime) / sf::seconds(1.f);
-		if (elapse > 1.f)
+		if (elapse > 1.5f)
 		{
 			this->isimmune = false;
 			this->self.setFillColor(sf::Color::Cyan);
@@ -115,8 +153,13 @@ bool Player::alive()const
 {
 	return this->life > 0;
 }
-void Player::addspeed(const float& rate)
+void Player::addspeed()
 {
-	this->speed += rate;
-	this->speed = std::min(this->speed, 20.f);
+	this->m_acceleration += 400.f;
+	this->maxspeed += 200.f;
+	if (this->m_acceleration > 3400.f)
+	{
+		this->m_acceleration = 3400.f;
+		this->maxspeed = 1700.f;
+	}
 }

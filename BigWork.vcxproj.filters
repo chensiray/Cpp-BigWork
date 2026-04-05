@@ -21,7 +21,7 @@
     <ClCompile Include="Button.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="rescource.cpp">
+    <ClCompile Include="resource.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -44,47 +44,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="RedHeart.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="music.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="pause.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="award.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="clear.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="clock.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="glasses.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="speed.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="shield.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="coin.png">
-      <Filter>资源文件</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="HarmonyOS_Sans_SC_Regular.ttf">
-      <Filter>资源文件</Filter>
-    </Font>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Button.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="rescource.h">
+    <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -107,20 +70,75 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="Darkling.mp3">
+    <Image Include="resource\award.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\clear.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\clock.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\coin.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\glasses.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\music.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\pause.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\RedHeart.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\shield.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\speed.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="resource\title.png">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="resource\Darkling.mp3">
       <Filter>资源文件</Filter>
     </Media>
-    <Media Include="Mesmerizing Galaxy Loop.mp3">
+    <Media Include="resource\Galactic Rap.mp3">
       <Filter>资源文件</Filter>
     </Media>
-    <Media Include="Obliteration.mp3">
+    <Media Include="resource\Mesmerizing Galaxy Loop.mp3">
       <Filter>资源文件</Filter>
     </Media>
-    <Media Include="Galactic Rap.mp3">
+    <Media Include="resource\Obliteration.mp3">
       <Filter>资源文件</Filter>
     </Media>
-    <Media Include="Screen Saver.mp3">
+    <Media Include="resource\Screen Saver.mp3">
       <Filter>资源文件</Filter>
     </Media>
+    <Media Include="resource\ding.mp3">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="resource\lottery.mp3">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="resource\lotteryloop.mp3">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="resource\clear.mp3">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="resource\press.mp3">
+      <Filter>资源文件</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resource\HarmonyOS_Sans_SC_Regular.ttf">
+      <Filter>资源文件</Filter>
+    </Font>
   </ItemGroup>
 </Project>

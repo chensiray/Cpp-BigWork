@@ -1,5 +1,5 @@
 #pragma once
-#include"rescource.h"
+#include"resource.h"
 #include"Button.h"
 class Lottery :public sf::Drawable
 {

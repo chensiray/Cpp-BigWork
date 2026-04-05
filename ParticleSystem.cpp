@@ -33,6 +33,10 @@ void ParticleSystem::update()
 		}
 		this->self[i].position.x += p.velocity * elapsed * cos(p.angle);
 		this->self[i].position.y += p.velocity * elapsed * sin(p.angle);
+		if (self[i].position.x < 0 || self[i].position.x > 1920.f || self[i].position.y < 0 || self[i].position.y > 1080.f)
+		{
+			reset(i);
+		}
 		float dx = this->self[i].position.x - this->position.x;
 		float dy = this->self[i].position.y - this->position.y;
 		float ratio = exp(-0.4f * sqrt(dx * dx + dy * dy) / radius);

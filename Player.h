@@ -1,5 +1,5 @@
 #pragma once
-#include"rescource.h"
+#include"resource.h"
 class Player :public sf::Drawable
 {
 public:
@@ -10,7 +10,7 @@ public:
 	bool alive()const;
 	void addlife(const int& cnt);
 	int getlife()const;
-	void addspeed(const float& rate);
+	void addspeed();
 	void shield();
 	sf::FloatRect getBounds()const;
 	sf::Vector2f getPosition()const;
@@ -20,10 +20,18 @@ public:
 	int haveshield;
 private:
 	sf::RectangleShape self = sf::RectangleShape({ 20.f,20.f });
-	float speed;
+	sf::CircleShape glow;
+	sf::Vector2f speed;
+	std::deque<sf::Vector2f> trail;
+	sf::VertexArray trailvertics;
+	int trailmax;
+	float m_acceleration;
+	float maxspeed;
+	float friction;
 	int life;
 	bool isimmune;
 	bool isshield;
+	sf::Clock glowClock;
 	sf::Time immuneBirthTime;
 	sf::Time shieldBirthTime;
 	std::vector<sf::Sprite> hearts = { sf::Sprite(heartTexture), sf::Sprite(heartTexture), sf::Sprite(heartTexture), sf::Sprite(heartTexture), sf::Sprite(heartTexture), sf::Sprite(heartTexture), sf::Sprite(heartTexture), sf::Sprite(heartTexture), sf::Sprite(heartTexture), sf::Sprite(heartTexture) };

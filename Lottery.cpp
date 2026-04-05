@@ -1,4 +1,4 @@
-#include"Lottery.h"
+﻿#include"Lottery.h"
 Lottery::Lottery(const sf::Vector2f& position)
 {
 	this->self1 = sf::RectangleShape({ 1000.f,300.f });
@@ -20,8 +20,8 @@ Lottery::Lottery(const sf::Vector2f& position)
 		this->box[i].setPosition(position + sf::Vector2f({ (i - 1) * 250.f,0.f }));
 	}
 	this->change();
-	this->bingo = new Button(Bingo, { 300.f,120.f }, position + sf::Vector2f({ 450.f,400.f }), sf::Color::Blue);
-	this->back = new Button(Back, { 300.f,120.f }, position + sf::Vector2f({ -450.f,400.f }), sf::Color::Red);
+	this->bingo = new Button(U"点击抽奖", { 300.f,120.f }, position + sf::Vector2f({ 450.f,400.f }), sf::Color::Blue);
+	this->back = new Button(U"继续游戏", { 300.f,120.f }, position + sf::Vector2f({ -450.f,400.f }), sf::Color::Red);
 }
 void Lottery::draw(sf::RenderTarget& target, sf::RenderStates states)const
 {
@@ -44,13 +44,20 @@ bool Lottery::update(const sf::Vector2f& mousePos)
 	this->back->update(mousePos);
 	if (!isroll) return false;
 	float time = this->getTime();
-	float now = sin(exp(time/1.1f));
+	float now = sin(exp(2.5f + time / 1.1f));
 	if (this->last * now <= 0)
 	{
 		this->change();
 	}
 	this->last = now;
-	if (time > 5.5f)
+	if (time > 2.0f)
+	{
+		if (ding.getStatus() != sf::Sound::Status::Playing)
+		{
+			ding.play();
+		}
+	}
+	if (time > 3.f)
 	{
 		this->isroll = false;
 		return true;
@@ -84,6 +91,8 @@ void Lottery::getPrize()
 {
 	this->isroll = true;
 	this->birthTime = gameTime;
+	lotteryloop.play();
+	lotteryloop.setPlayingOffset(sf::milliseconds(100));
 }
 float Lottery::getTime()const
 {

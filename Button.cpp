@@ -34,6 +34,8 @@ bool Button::headleEvent(const sf::Event& event, const sf::RenderWindow& window)
 			sf::Vector2f mousePos = window.mapPixelToCoords(mousepressed->position);
 			if (this->background.getGlobalBounds().contains(mousePos))
 			{
+				press.play();
+				press.setPlayingOffset(sf::milliseconds(290));
 				this->isAnimating = true;
 				this->birthTime = gameTime;
 				return true;
@@ -93,9 +95,13 @@ bool MusicButton::headleEvent(const sf::Event& event, const sf::RenderWindow& wi
 		if (mousepressed->button == sf::Mouse::Button::Left)
 		{
 			sf::Vector2f mousePos = window.mapPixelToCoords(mousepressed->position);
-			if (this->self.getGlobalBounds().contains(mousePos))
+			float dx = this->self.getPosition().x - mousePos.x;
+			float dy = this->self.getPosition().y - mousePos.y;
+			if (dx * dx + dy * dy < 3500.f)
 			{
 				this->ismusic = !this->ismusic;
+				press.play();
+				press.setPlayingOffset(sf::milliseconds(290));
 				return true;
 			}
 		}

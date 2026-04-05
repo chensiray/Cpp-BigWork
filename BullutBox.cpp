@@ -11,15 +11,19 @@ void BulletBox::setPosition(const sf::Vector2f& position)
 void BulletBox::round(const float& size, const int& type, const float& r)
 {
     sf::Vector2f po = this->position;
-    std::uniform_real_distribution<float> dis(0.0, pi / 6);
+    std::uniform_real_distribution<float> dis(-pi / 6, pi / 6);
     float phase = dis(gen);
     for (int i = 1; i <= 12; i++)
     {
         po.x -= r * cos(i * pi / 6 + phase);
         po.y -= r * sin(i * pi / 6 + phase);
-        this->bullets->push_back(std::unique_ptr<RoundBullet>(new RoundBullet({ size,size }, po, sf::Color::Red, 5.f, phase + i * pi / 6, type)));
+        this->bullets->push_back(std::unique_ptr<RoundBullet>(new RoundBullet(size, po, sf::Color::Red, 5.f, phase + i * pi / 6, type)));
         po = this->position;
     }
+}
+void BulletBox::shoot(const float& size, const int& type, const float& angle)
+{
+    this->bullets->push_back(std::unique_ptr<RoundBullet>(new RoundBullet(size, this->position, sf::Color::Red, 5.f, angle, type)));
 }
 void BulletBox::follow(const float& size, const int& type,Player *const target)
 {
@@ -29,7 +33,7 @@ void BulletBox::sector(const float& size, const int& type,const float& angle)
 {
     for (int i = 0; i <= 8; i++)
     {
-        this->bullets->push_back(std::unique_ptr<RoundBullet>(new RoundBullet({ size,size }, this->position, sf::Color::Red, 5.f, angle + pi * i / 24 - pi / 6, type)));
+        this->bullets->push_back(std::unique_ptr<RoundBullet>(new RoundBullet(size, this->position, sf::Color::Red, 5.f, angle + pi * i / 24 - pi / 6, type)));
     }
 }
 void BulletBox::randomfall(const sf::Vector2f& size, const int& type, const float& angle)
@@ -56,4 +60,8 @@ void BulletBox::boom(const float& size, const int& type, const float& angle, con
 void BulletBox::plane(const sf::Vector2f& size, const int& type, const float& angle, const float& wait)
 {
     this->bullets->push_back(std::unique_ptr<PlaneBullet>(new PlaneBullet(size, this->position, sf::Color::Red, 5.f, angle, type, wait, new BulletBox(this->position, *bullets))));
+}
+void BulletBox::serpentine(const float& size, const int& type, const float& angle)
+{
+    this->bullets->push_back(std::unique_ptr<SerpentineBullet>(new SerpentineBullet(size, this->position, sf::Color::Red, 5.f, angle, type)));
 }

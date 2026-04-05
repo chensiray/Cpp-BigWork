@@ -1,5 +1,5 @@
 #pragma once
-#include"rescource.h"
+#include"resource.h"
 #include"ParticleSystem.h"
 #include"Player.h"
 class Item :sf::Drawable

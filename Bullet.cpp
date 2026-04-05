@@ -1,4 +1,4 @@
-#include"Bullet.h"
+﻿#include"Bullet.h"
 #include"BulletBox.h"
 #include"Player.h"
 int Bullet::count = 0;
@@ -7,10 +7,12 @@ Bullet::Bullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf:
 	this->self.setPosition(position);
 	this->self.setSize(size);
 	this->self.setFillColor(color);
+	this->trailvertics.setPrimitiveType(sf::PrimitiveType::Points);
 	this->velocity = velocity;
 	this->isactive = true;
 	this->type = type;
 	this->birthTime = gameTime;
+	this->trailmax = 20;
 	this->count++;
 }
 float Bullet::getv()const
@@ -40,16 +42,17 @@ void Bullet::restart()
 	this->birthTime = gameTime;
 }
 //RoundBullet
-RoundBullet::RoundBullet(const sf::Vector2f& size, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type) :Bullet(size, position, color, velocity, type)
+RoundBullet::RoundBullet(const float& radius, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type) :Bullet({radius,radius}, position, color, velocity, type)
 {
 	this->self.setPosition(position);
-	this->self.setRadius(size.x/2.f);
-	this->self.setOrigin({ size.x / 2.f,size.x / 2.f });
+	this->self.setRadius(radius);
+	this->self.setOrigin({ radius,radius });;
 	this->self.setFillColor(color);
 	this->angle = angle;
 }
 void RoundBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
 {
+	target.draw(this->trailvertics, states);
 	target.draw(this->self, states);
 }
 bool RoundBullet::checkCollision(const sf::FloatRect& playerBounds)const
@@ -60,6 +63,16 @@ bool RoundBullet::checkCollision(const sf::FloatRect& playerBounds)const
 }
 void RoundBullet::update()
 {
+	sf::Vector2f delta = { std::uniform_real_distribution<float>(-10.f,10.f)(gen),std::uniform_real_distribution<float>(-10.f,10.f)(gen) };
+	this->trail.push_front(this->self.getPosition() + delta);
+	if (trail.size() > this->trailmax) trail.pop_back();
+	this->trailvertics.clear();
+	sf::Color color({ 255,0,0,255 });
+	for (const auto& pos : trail)
+	{
+		trailvertics.append(sf::Vertex(pos, color));
+		color.a -= static_cast<std::uint8_t>(1.f / this->trailmax * 255);
+	}
 	float v = this->getv();
 	this->self.move({ v * cos(this->angle), v * sin(this->angle) });
 	if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
@@ -74,12 +87,14 @@ TriangleBullet::TriangleBullet(const float& size, const sf::Vector2f& position, 
 	this->self.setRadius(size / 2);
 	this->self.setOrigin({ size / 2.f,size / 2.f });
 	this->self.setFillColor(color);
+	this->trailmax = 30;
 	this->target = target;
 	this->angle = 0;
 	this->isfollow = true;
 }
 void TriangleBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
 {
+	target.draw(this->trailvertics, states);
 	target.draw(this->self, states);
 }
 bool TriangleBullet::checkCollision(const sf::FloatRect& playerBounds)const
@@ -90,6 +105,16 @@ bool TriangleBullet::checkCollision(const sf::FloatRect& playerBounds)const
 }
 void TriangleBullet::update()
 {
+	sf::Vector2f delta = { std::uniform_real_distribution<float>(-10.f,10.f)(gen),std::uniform_real_distribution<float>(-10.f,10.f)(gen) };
+	this->trail.push_front(this->self.getPosition() + delta);
+	if (trail.size() > this->trailmax) trail.pop_back();
+	this->trailvertics.clear();
+	sf::Color color({ 255,0,0,255 });
+	for (const auto& pos : trail)
+	{
+		trailvertics.append(sf::Vertex(pos, color));
+		color.a -= static_cast<std::uint8_t>(1.f / this->trailmax * 255);
+	}
 	float v = this->getv();
 	sf::Vector2f to = this->target->getPosition();
 	float dx = to.x - this->self.getPosition().x;
@@ -116,6 +141,7 @@ RectangleBullet::RectangleBullet(const sf::Vector2f& size, const sf::Vector2f& p
 	this->self.setSize(size);
 	this->self.setFillColor(color);
 	this->self.setOrigin(size / 2.f);
+	this->trailmax = 300;
 	this->color = color;
 	this->angle = angle;
 	this->wait = wait;
@@ -123,6 +149,7 @@ RectangleBullet::RectangleBullet(const sf::Vector2f& size, const sf::Vector2f& p
 }
 void RectangleBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
 {
+	target.draw(this->trailvertics, states);
 	target.draw(this->self, states);
 }
 bool RectangleBullet::checkCollision(const sf::FloatRect& playerBounds)const
@@ -138,6 +165,18 @@ void RectangleBullet::update()
 {
 	if (this->ismove)
 	{
+		sf::Vector2f delta = { std::uniform_real_distribution<float>(-10.f,10.f)(gen),std::uniform_real_distribution<float>(-30.f,30.f)(gen) };
+		this->trail.push_front(this->self.getPosition() + delta);
+		delta = { std::uniform_real_distribution<float>(-10.f,10.f)(gen),std::uniform_real_distribution<float>(-30.f,30.f)(gen) };
+		this->trail.push_front(this->self.getPosition() + delta);
+		while (trail.size() > this->trailmax) trail.pop_back();
+		this->trailvertics.clear();
+		sf::Color color({ 255,0,0,255 });
+		for (const auto& pos : trail)
+		{
+			trailvertics.append(sf::Vertex(pos, color));
+			color.a -= static_cast<std::uint8_t>(1.f / this->trailmax * 255);
+		}
 		float v = this->getv();
 		this->self.move({ v * cos(this->angle), v * sin(this->angle) });
 		if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
@@ -172,6 +211,7 @@ BoomBullet::BoomBullet(const float& size, const sf::Vector2f& position, const sf
 	this->self.setRadius(size / 2.f);
 	this->self.setOrigin({ size / 2.f,size / 2.f });
 	this->self.setFillColor(color);
+	this->trailmax = 50;
 	this->angle = angle;
 	this->color = color;
 	this->wait = wait;
@@ -182,6 +222,7 @@ BoomBullet::~BoomBullet()
 }
 void BoomBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
 {
+	target.draw(this->trailvertics, states);
 	target.draw(this->self, states);
 }
 bool BoomBullet::checkCollision(const sf::FloatRect& playerBounds)const
@@ -192,6 +233,16 @@ bool BoomBullet::checkCollision(const sf::FloatRect& playerBounds)const
 }
 void BoomBullet::update()
 {
+	sf::Vector2f delta = { std::uniform_real_distribution<float>(-10.f,10.f)(gen),std::uniform_real_distribution<float>(-10.f,10.f)(gen) };
+	this->trail.push_front(this->self.getPosition() + delta);
+	if (trail.size() > this->trailmax) trail.pop_back();
+	this->trailvertics.clear();
+	sf::Color color({ 255,0,0,255 });
+	for (const auto& pos : trail)
+	{
+		trailvertics.append(sf::Vertex(pos, color));
+		color.a -= static_cast<std::uint8_t>(1.f / this->trailmax * 255);
+	}
 	float v = this->getv();
 	this->self.move({ v * cos(this->angle), v * sin(this->angle) });
 	if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
@@ -212,7 +263,7 @@ void BoomBullet::update()
 	{
 		this->self.setFillColor(this->color);
 		this->isactive = false;
-		this->box->round(20.f, 2, -30.f);
+		this->box->round(10.f, 2, -30.f);
 	}
 }
 //PlaneBullet
@@ -222,6 +273,7 @@ PlaneBullet::PlaneBullet(const sf::Vector2f& size, const sf::Vector2f& position,
 	this->self.setPosition(position);
 	this->self.setFillColor(color);
 	this->self.setOrigin(size / 2.f);
+	this->trailmax = 60;
 	this->angle = angle;
 	this->wait = wait;
 	this->color = color;
@@ -233,6 +285,7 @@ PlaneBullet::~PlaneBullet()
 }
 void PlaneBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
 {
+	target.draw(this->trailvertics, states);
 	target.draw(this->self, states);
 }
 bool PlaneBullet::checkCollision(const sf::FloatRect& playerBounds)const
@@ -246,6 +299,16 @@ bool PlaneBullet::checkCollision(const sf::FloatRect& playerBounds)const
 }
 void PlaneBullet::update()
 {
+	sf::Vector2f delta = { std::uniform_real_distribution<float>(-10.f,10.f)(gen),std::uniform_real_distribution<float>(-10.f,10.f)(gen) };
+	this->trail.push_front(this->self.getPosition() + delta);
+	if (trail.size() > this->trailmax) trail.pop_back();
+	this->trailvertics.clear();
+	sf::Color color({ 255,0,0,255 });
+	for (const auto& pos : trail)
+	{
+		trailvertics.append(sf::Vertex(pos, color));
+		color.a -= static_cast<std::uint8_t>(1.f / this->trailmax * 255);
+	}
 	float v = this->getv();
 	this->self.move({ v * cos(this->angle), v * sin(this->angle) });
 	if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
@@ -255,7 +318,48 @@ void PlaneBullet::update()
 	this->box->setPosition(this->self.getPosition());
 	if (this->getTime() > this->wait)
 	{
-		this->box->round(20.f, 2, 0.f);
+		this->box->round(10.f, 2, 0.f);
 		this->restart();
+	}
+}
+//SerpentineBullet
+SerpentineBullet::SerpentineBullet(const float& radius, const sf::Vector2f& position, const sf::Color& color, const float& velocity, const float& angle, const int& type) :Bullet({ radius,radius }, position, color, velocity, type)
+{
+	this->self.setRadius(radius);
+	this->self.setFillColor(color);
+	this->self.setPosition(position);
+	this->self.setOrigin({ radius,radius });
+	this->angle = angle;
+}
+void SerpentineBullet::draw(sf::RenderTarget& target, sf::RenderStates states)const
+{
+	target.draw(this->trailvertics, states);
+	target.draw(this->self, states);
+}
+bool SerpentineBullet::checkCollision(const sf::FloatRect& playerBounds)const
+{
+	float dx = this->self.getPosition().x - std::max(playerBounds.position.x, std::min(this->self.getPosition().x, playerBounds.position.x + playerBounds.size.x));
+	float dy = this->self.getPosition().y - std::max(playerBounds.position.y, std::min(this->self.getPosition().y, playerBounds.position.y + playerBounds.size.y));
+	return (dx * dx + dy * dy) <= this->self.getRadius() * this->self.getRadius();
+}
+void SerpentineBullet::update()
+{
+	sf::Vector2f delta = { std::uniform_real_distribution<float>(-10.f,10.f)(gen),std::uniform_real_distribution<float>(-10.f,10.f)(gen) };
+	this->trail.push_front(this->self.getPosition() + delta);
+	if (trail.size() > this->trailmax) trail.pop_back();
+	this->trailvertics.clear();
+	sf::Color color({ 255,0,0,255 });
+	for (const auto& pos : trail)
+	{
+		trailvertics.append(sf::Vertex(pos, color));
+		color.a -= static_cast<std::uint8_t>(1.f / this->trailmax * 255);
+	}
+	float v = this->getv();
+	this->self.move({ v * cos(this->angle), v * sin(this->angle) });
+	float vy = 20.f * cos(this->getTime() * pi);
+	this->self.move({ vy * sin(this->angle), vy * cos(this->angle) });
+	if (this->self.getPosition().x < -100 || this->self.getPosition().x > 2000 || this->self.getPosition().y < -100 || self.getPosition().y > 1200)
+	{
+		this->isactive = false;
 	}
 }

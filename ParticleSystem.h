@@ -1,5 +1,5 @@
 #pragma once
-#include"rescource.h"
+#include"resource.h"
 class ParticleSystem :public sf::Drawable
 {
 public:
