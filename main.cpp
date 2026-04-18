@@ -39,7 +39,8 @@ static void updateViewport(const sf::RenderWindow& window, sf::View& gameview)
     viewport.position.y = (1.0f - viewport.size.y) / 2.0f;
     gameview.setViewport(viewport);
 }
-int main() {
+int main()
+{
     //加载资源
     if (!loadResources())
     {

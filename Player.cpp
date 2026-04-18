@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 Player::Player(const int& life, const float& x, const float& y)
 {
 	this->life = life;
